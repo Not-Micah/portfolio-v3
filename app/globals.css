@@ -1,3 +1,18 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .project-card-container {
+    @apply 
+      absolute w-[200px] h-[200px]
+      lg:rotate-[20deg] lg:-left-[20px] lg:-bottom-[25px]
+      transform translate-y-[100px] -translate-x-[250px] 
+      lg:group-hover:translate-y-[0px] lg:group-hover:translate-x-[0px]
+      transition-all duration-500
+      p-4 rounded-md
+      
+      max-lg:translate-y-[0px] max-lg:translate-x-[0px]
+      max-lg:-right-[25px] max-lg:rotate-[-15deg] max-lg:-bottom-[65px];
+  }
+}
