@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { motion, useScroll, MotionValue } from "framer-motion";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -10,6 +11,7 @@ interface ProjectProps {
   descriptionText: string;
   gradientColorOne: string;
   gradientColorTwo: string;
+  noTextChange?: boolean;
 }
 
 const Project: React.FC<ProjectProps> = ({
@@ -18,28 +20,37 @@ const Project: React.FC<ProjectProps> = ({
   descriptionText,
   gradientColorOne,
   gradientColorTwo,
+  noTextChange
 }) => {
+  const targetRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start end", "end start"],
+  });
+
   const [isActive, setIsActive] = useState(false);
 
-  const handleMouseDown = () => setIsActive(true);
-  const handleMouseUp = () => setIsActive(false);
+  useEffect(() => {
+    const unsubscribe = scrollYProgress.onChange((value: number) => {
+      setIsActive(value > 0.4 && value < 0.6);
+    });
+    return () => unsubscribe();
+  }, [scrollYProgress]);
 
   useEffect(() => {
     AOS.init();
   }, []);
 
   return (
-    <div
+    <motion.div
       data-aos="fade-up"
       data-aos-anchor-placement="bottom-bottom"
+      ref={targetRef}
       className={`relative w-[200px] h-[200px] overflow-hidden rounded-md group transition-all duration-500 
         lg:hover:transform lg:hover:-translate-y-[10px] max-lg:w-[100vw]`}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
     >
       {/* Background Gradient */}
-      <div
+      <motion.div
         className={`absolute w-full h-full rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-0 
           lg:group-hover:scale-[160%] lg:group-hover:opacity-100 opacity-0 transition-all duration-500 delay-100 
           max-lg:w-[600px] max-lg:h-[600px] ${isActive ? "scale-[160%] opacity-100" : ""}`}
@@ -48,33 +59,35 @@ const Project: React.FC<ProjectProps> = ({
         }}
       />
       {/* Application Overlay */}
-      <div
+      <motion.div
         className={`absolute w-full h-full inset-0 transition-all duration-500 
           ${isActive ? "max-lg:translate-x-[0px] max-lg:translate-y-[0px]" : "max-lg:translate-x-[150px] max-lg:translate-y-[150px]"}`}
       >
         {children}
-      </div>
+      </motion.div>
       {/* Content Overlay */}
-      <div className="w-full h-full flex flex-col justify-end p-4 bg-black/90">
-        <div
+      <motion.div className="w-full h-full flex flex-col justify-end p-4 bg-black/90">
+        <motion.div
           className={`transition-all duration-500 transform translate-y-[25px] lg:group-hover:translate-y-[0px] 
             ${isActive ? "max-lg:translate-y-[0px]" : ""}`}
         >
-          <h3
-            className={`text-xl font-semibold z-10 text-white lg:group-hover:text-black transition-all duration-500 
-              ${isActive ? "max-lg:text-black" : ""}`}
+          <motion.h3
+            className={`text-xl font-semibold z-10 text-white transition-all duration-500 
+              ${!noTextChange && "lg:group-hover:text-black"}
+              ${(isActive && !noTextChange) ? "max-lg:text-black" : ""}`}
           >
             {headerText}
-          </h3>
-          <p
-            className={`text-sm z-10 text-black lg:group-hover:opacity-100 opacity-0 transition-all duration-500 
-              ${isActive ? "max-lg:opacity-100" : ""}`}
+          </motion.h3>
+          <motion.p
+            className={`text-sm z-10 text-white lg:group-hover:opacity-100 opacity-0 transition-all duration-500 
+              ${!noTextChange && "lg:group-hover:text-black"}
+              ${(isActive && !noTextChange) ? "max-lg:opacity-100 max-lg:text-black" : ""}`}
           >
             {descriptionText}
-          </p>
-        </div>
-      </div>
-    </div>
+          </motion.p>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 
