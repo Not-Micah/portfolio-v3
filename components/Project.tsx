@@ -53,7 +53,7 @@ const Project: React.FC<ProjectProps> = ({
       <motion.div
         className={`absolute w-full h-full rounded-full left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 scale-0 
           lg:group-hover:scale-[160%] lg:group-hover:opacity-100 opacity-0 transition-all duration-500 delay-100 
-          max-lg:w-[600px] max-lg:h-[600px] ${isActive ? "scale-[160%] opacity-100" : ""}`}
+          max-lg:w-[600px] max-lg:h-[600px] ${isActive ? "max-lg:scale-[160%] max-lg:opacity-100" : ""}`}
         style={{
           background: `linear-gradient(to top, ${gradientColorOne}, ${gradientColorTwo})`,
         }}
@@ -80,8 +80,8 @@ const Project: React.FC<ProjectProps> = ({
           </motion.h3>
           <motion.p
             className={`text-sm z-10 text-white lg:group-hover:opacity-100 opacity-0 transition-all duration-500 
-              ${!noTextChange && "lg:group-hover:text-black"}
-              ${(isActive && !noTextChange) ? "max-lg:opacity-100 max-lg:text-black" : ""}`}
+              ${!noTextChange && "lg:group-hover:text-black max-lg:text-black"}
+              ${isActive ? "max-lg:opacity-100 max-lg:text-black" : ""}}`}
           >
             {descriptionText}
           </motion.p>
