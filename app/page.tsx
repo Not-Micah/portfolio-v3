@@ -1,9 +1,9 @@
-import ProjectSection from "@/components/ProjectSection";
+import Hero from "@/components/Hero";
 
 const Home = () => {
   return (
     <div className="">
-      <ProjectSection />
+      <Hero />
     </div>
   );
 };
